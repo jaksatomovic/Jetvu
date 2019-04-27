@@ -1,5 +1,6 @@
 package canarin.airportservice.security;
 
+import canarin.airportservice.service.JwtTokenService;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

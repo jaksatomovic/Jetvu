@@ -1,4 +1,4 @@
-package canarin.airportservice.security;
+package canarin.airportservice.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
