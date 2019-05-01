@@ -1,19 +1,37 @@
 package canarin.airportservice.controller;
 
-import canarin.airportservice.payload.AirportResponse;
-import org.springframework.http.HttpStatus;
+import canarin.airportservice.model.Airport;
+import canarin.airportservice.payload.AirportRequest;
+import canarin.airportservice.service.AirportService;
+import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/airports")
 public class AirportController {
+
+    @Autowired
+    private AirportService airportService;
+
     @GetMapping
-    public ResponseEntity<AirportResponse> getCustomers() {
-        AirportResponse airportResponse = new AirportResponse();
-        airportResponse.setIATA("ZAG");
-        return new ResponseEntity<>(airportResponse, HttpStatus.OK);
+    public List<Airport> getAll() {
+        return airportService.findAll();
     }
+
+    @PostMapping
+    public ResponseEntity<?> addAirport(@RequestBody @Valid @NonNull AirportRequest airportRequest){
+        return airportService.addAirport(airportRequest);
+    }
+
+//    @GetMapping
+//    public ResponseEntity<AirportResponse> getCustomers() {
+//        AirportResponse airportResponse = new AirportResponse();
+//        airportResponse.setIATA("ZAG");
+//        return new ResponseEntity<>(airportResponse, HttpStatus.OK);
+//    }
 }

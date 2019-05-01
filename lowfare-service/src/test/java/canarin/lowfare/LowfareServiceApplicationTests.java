@@ -1,4 +1,4 @@
-package canarin.searchservice;
+package canarin.lowfare;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SearchServiceApplicationTests {
+public class LowfareServiceApplicationTests {
 
 	@Test
 	public void contextLoads() {
