@@ -18,7 +18,7 @@ public class FlightController {
     @Autowired
     private FlightService flightService;
 
-    @PostMapping("/flight")
+    @PostMapping("/flights")
     List<Flight> flightSearch (@RequestBody Params searchRequest){
         try {
             return flightService.flightSearch(searchRequest);

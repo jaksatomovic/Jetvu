@@ -2,15 +2,20 @@ package canarin.lowfare.service;
 
 import canarin.lowfare.model.Flight;
 import canarin.lowfare.model.FlightOffer;
+import canarin.lowfare.model.ParamQuery;
 import canarin.lowfare.repository.FlightRepository;
+import canarin.lowfare.repository.ParamQueryRepository;
 import canarin.lowfare.rest.Amadeus;
 import canarin.lowfare.util.Params;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FlightService {
@@ -22,9 +27,29 @@ public class FlightService {
 
     @Autowired
     private FlightRepository flightRepository;
+    @Autowired
+    private ParamQueryRepository paramQueryRepository;
 
+    @Transactional
     public List<Flight> flightSearch(Params searchRequest) throws Exception {
+
+        List<ParamQuery>  paramQueries = paramQueryRepository.findAll().stream()
+            .filter(paramQuery -> paramQuery.getUrlQuery().equals(searchRequest.toQueryString()))
+            .distinct()
+            .collect(Collectors.toList());
+
+        if (paramQueries.size() != 0 ) {
+            return flightRepository.findAll().stream()
+                .filter(flight -> flight.getParam().equals(paramQueries.get(0)))
+                .collect(Collectors.toList());
+        }
+
+        ParamQuery paramQueryToSave = new ParamQuery();
+        paramQueryToSave.setUrlQuery(searchRequest.toQueryString());
+
         List<Flight> results = new ArrayList<>();
+        System.out.println(searchRequest.toQueryString());
+
         Amadeus amadeus = Amadeus
             .builder(AMADEUS_CLIENT_ID, AMADEUS_CLIENT_SECRET)
             .build();
@@ -36,16 +61,22 @@ public class FlightService {
             FlightOffer.FlightSegment flightSegment = flightOffer.getOfferItems()[0].getServices()[0].getSegments()[0].getFlightSegment();
             FlightOffer.Price price = flightOffer.getOfferItems()[0].getPrice();
 
-            // returns to client
-            results.add(new Flight().builder()
+            Flight flightToSave = new Flight().builder()
                 .origin(flightSegment.getDeparture().getIataCode())
                 .destination(flightSegment.getArrival().getIataCode())
                 .returnDate(flightSegment.getArrival().getIataCode())
                 .departureDate(flightSegment.getDeparture().getAt())
-//                .stops(flightSegment.getStops().length)
+                //                .stops(flightSegment.getStops().length)
                 .priceTotal(price.getTotal())
                 .adults(flightOffer.getOfferItems()[0].getServices()[0].getSegments()[0].getPricingDetailPerAdult().getAvailability())
-                .build());
+                .param(paramQueryToSave)
+                .build();
+
+            // returns to client
+            paramQueryRepository.save(paramQueryToSave);
+            flightRepository.save(flightToSave);
+
+            results.add(flightToSave);
         }
 
         return results;
