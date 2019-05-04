@@ -18,6 +18,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public ResponseEntity<JWTTokenResponse> createCustomer(@RequestBody AuthenticationRequest request) {
         return new ResponseEntity<>(authenticationService.generateJWTToken(request.getUsername(), request.getPassword()), HttpStatus.OK);

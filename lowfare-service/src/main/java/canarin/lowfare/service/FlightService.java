@@ -40,7 +40,7 @@ public class FlightService {
 
         if (paramQueries.size() != 0 ) {
             return flightRepository.findAll().stream()
-                .filter(flight -> flight.getParam().equals(paramQueries.get(0)))
+                .filter(flight -> flight.getParam().equals(paramQueries.get(0))) // ne valja ispravit
                 .collect(Collectors.toList());
         }
 
@@ -64,9 +64,8 @@ public class FlightService {
             Flight flightToSave = new Flight().builder()
                 .origin(flightSegment.getDeparture().getIataCode())
                 .destination(flightSegment.getArrival().getIataCode())
-                .returnDate(flightSegment.getArrival().getIataCode())
+                .returnDate(flightSegment.getArrival().getAt())
                 .departureDate(flightSegment.getDeparture().getAt())
-                //                .stops(flightSegment.getStops().length)
                 .priceTotal(price.getTotal())
                 .adults(flightOffer.getOfferItems()[0].getServices()[0].getSegments()[0].getPricingDetailPerAdult().getAvailability())
                 .param(paramQueryToSave)

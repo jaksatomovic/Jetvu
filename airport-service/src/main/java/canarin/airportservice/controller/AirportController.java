@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/airports")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AirportController {
 
     @Autowired
@@ -27,11 +28,4 @@ public class AirportController {
     public ResponseEntity<?> addAirport(@RequestBody @Valid @NonNull AirportRequest airportRequest){
         return airportService.addAirport(airportRequest);
     }
-
-//    @GetMapping
-//    public ResponseEntity<AirportResponse> getCustomers() {
-//        AirportResponse airportResponse = new AirportResponse();
-//        airportResponse.setIATA("ZAG");
-//        return new ResponseEntity<>(airportResponse, HttpStatus.OK);
-//    }
 }

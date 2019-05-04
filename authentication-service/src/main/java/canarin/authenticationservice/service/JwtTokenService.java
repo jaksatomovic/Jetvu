@@ -27,6 +27,7 @@ public class JwtTokenService {
         return Jwts.builder()
             .setClaims(new HashMap<>())
             .setSubject(username)
+            .claim("username", username)
             .setIssuedAt(createdDate)
             .setExpiration(expirationDate)
             .signWith(SignatureAlgorithm.HS512, jwtSecret)

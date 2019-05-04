@@ -1,18 +1,10 @@
 import React, {Component, Fragment} from "react";
-import classNames from "classnames";
 // reactstrap components
 import {
     Button,
-    ButtonGroup,
     Card,
     CardHeader,
     CardBody,
-    CardTitle,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    UncontrolledDropdown,
-    Label,
     FormGroup,
     Input,
     Table,
@@ -20,14 +12,47 @@ import {
     Col,
     UncontrolledTooltip, Form, CardFooter, CardText
 } from "reactstrap";
+import axios from "axios";
 
 
 
 class Airport extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            airports: []
+        }
     }
+
+    fetchAirports = () => {
+        let self = this
+
+        axios.get("http://localhost:9001/airports", {
+            headers: {
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                // 'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': 'true'
+            },
+            routes: {
+                "cors": true
+            }
+        }).then(function (response) {
+            self.setState({
+                airports: response.data
+            }, () => console.log(response.data))
+        }).catch(function (error) {
+            console.log(error)
+        })
+    }
+
+    componentDidMount() {
+        this.fetchAirports()
+    }
+
     render() {
+        const { airports } = this.state
         return (
             <Fragment>
                 <div className="content">
@@ -38,7 +63,23 @@ class Airport extends Component {
                                     <h5 className="title">All Airports</h5>
                                 </CardHeader>
                                 <CardBody>
-                                {/*   Table*/}
+                                    {airports.length !== 0 && airports !== undefined &&
+                                    <Table className="tablesorter" responsive>
+                                        <thead className="text-primary">
+                                        <tr>
+                                            <th key={1}>Name</th>
+                                            <th key={2}>IATA Code</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {airports.map((airport, i) =>
+                                            <tr key={i}>
+                                                <td key={airport.id}>{airport.name}</td>
+                                                <td key={airport.id}>{airport.iata}</td>
+                                            </tr>
+                                        )}
+                                        </tbody>
+                                    </Table>}
                                 </CardBody>
                             </Card>
                         </Col>
@@ -52,10 +93,10 @@ class Airport extends Component {
                                         <Row>
                                             <Col className="pr-md-1" md="11">
                                                 <FormGroup>
-                                                    <label>Username</label>
+                                                    <label>Airport name</label>
                                                     <Input
-                                                        defaultValue="michael23"
-                                                        placeholder="Username"
+                                                        defaultValue="London"
+                                                        placeholder="Airport name"
                                                         type="text"
                                                     />
                                                 </FormGroup>
@@ -64,10 +105,10 @@ class Airport extends Component {
                                         <Row>
                                             <Col className="pr-md-1" md="11">
                                                 <FormGroup>
-                                                    <label>Country</label>
+                                                    <label>IATA Code</label>
                                                     <Input
-                                                        defaultValue="Andrew"
-                                                        placeholder="Country"
+                                                        defaultValue="LON"
+                                                        placeholder="IATA Code"
                                                         type="text"
                                                     />
                                                 </FormGroup>

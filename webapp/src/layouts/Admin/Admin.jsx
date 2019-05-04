@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
+import { tokenData } from 'helpers/util.js'
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
 
@@ -10,6 +11,7 @@ import Sidebar from "components/Sidebar/Sidebar.jsx";
 import routes from "routes.js";
 
 import logo from "assets/img/react-logo.png";
+import axios from "axios";
 
 var ps;
 
@@ -22,7 +24,23 @@ class Admin extends React.Component {
         document.documentElement.className.indexOf("nav-open") !== -1
     };
   }
+
+
+  initializeAxios = () => {
+    let accessToken = localStorage.getItem('accessToken')
+
+    axios.defaults.headers.common['Cache-Control'] = 'no-cache'
+    axios.defaults.headers.common['Pragma'] = 'no-cache'
+
+    if (accessToken) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken
+    }
+  }
+
   componentDidMount() {
+
+    this.initializeAxios()
+
     if (navigator.platform.indexOf("Win") > -1) {
       document.documentElement.className += " perfect-scrollbar-on";
       document.documentElement.classList.remove("perfect-scrollbar-off");
