@@ -21,29 +21,48 @@ class Airport extends Component {
         super(props);
 
         this.state = {
-            airports: []
+            airports: [],
+            name: '',
+            iata: ''
         }
     }
 
-    fetchAirports = () => {
+    fetchAirports = async () => {
         let self = this
 
-        axios.get("http://localhost:9001/airports", {
-            headers: {
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
-                // 'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': 'true'
-            },
-            routes: {
-                "cors": true
-            }
-        }).then(function (response) {
+        await axios.get("http://localhost:9001/airports").then(function (response) {
             self.setState({
                 airports: response.data
             }, () => console.log(response.data))
         }).catch(function (error) {
             console.log(error)
+        })
+    }
+
+    addAirport = async () => {
+        await axios.post("http://localhost:9001/airports", {
+            name: this.state.name,
+            iataCode: this.state.iata
+        }).then(function (response) {
+            this.setState({
+                name: '',
+                iata: ''
+            }, () => {
+                this.fetchAirports();
+            })
+        }).catch(function (error) {
+            console.log(error)
+        })
+        await window.location.reload();
+    }
+
+    handleChange = (event) => {
+        let name = event.target.name
+        let value = event.target.type === 'checkbox' ? event.target.checked : event.target.value
+
+        this.setState(prevState => {
+            prevState[name] = value
+            return prevState
         })
     }
 
@@ -98,6 +117,9 @@ class Airport extends Component {
                                                         defaultValue="London"
                                                         placeholder="Airport name"
                                                         type="text"
+                                                        name="name"
+                                                        value={this.state.name}
+                                                        onChange={this.handleChange}
                                                     />
                                                 </FormGroup>
                                             </Col>
@@ -110,6 +132,9 @@ class Airport extends Component {
                                                         defaultValue="LON"
                                                         placeholder="IATA Code"
                                                         type="text"
+                                                        name="iata"
+                                                        value={this.state.iata}
+                                                        onChange={this.handleChange}
                                                     />
                                                 </FormGroup>
                                             </Col>
@@ -117,7 +142,7 @@ class Airport extends Component {
                                     </Form>
                                 </CardBody>
                                 <CardFooter>
-                                    <Button className="btn-fill" color="primary" type="submit">
+                                    <Button className="btn-fill" color="primary" type="submit" onClick={this.addAirport}>
                                         Save
                                     </Button>
                                 </CardFooter>

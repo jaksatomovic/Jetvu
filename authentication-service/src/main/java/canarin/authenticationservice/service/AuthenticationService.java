@@ -17,7 +17,6 @@ public class AuthenticationService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-
     public AuthenticationService(AccountRepository accountRepository, JwtTokenService jwtTokenService, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.jwtTokenService = jwtTokenService;

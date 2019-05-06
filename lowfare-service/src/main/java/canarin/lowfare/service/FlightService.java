@@ -33,16 +33,18 @@ public class FlightService {
     @Transactional
     public List<Flight> flightSearch(Params searchRequest) throws Exception {
 
-        List<ParamQuery>  paramQueries = paramQueryRepository.findAll().stream()
-            .filter(paramQuery -> paramQuery.getUrlQuery().equals(searchRequest.toQueryString()))
-            .distinct()
-            .collect(Collectors.toList());
+        // TODO: Pametniji način provjere, npr. Optional<ParamQuery>
 
-        if (paramQueries.size() != 0 ) {
-            return flightRepository.findAll().stream()
-                .filter(flight -> flight.getParam().equals(paramQueries.get(0))) // ne valja ispravit
-                .collect(Collectors.toList());
-        }
+//        List<ParamQuery>  paramQueries = paramQueryRepository.findAll().stream()
+//            .filter(paramQuery -> paramQuery.getUrlQuery().equals(searchRequest.toQueryString()))
+//            .distinct()
+//            .collect(Collectors.toList());
+//
+//        if (paramQueries.size() != 0 ) {
+//            return flightRepository.findAll().stream()
+//                .filter(flight -> flight.getParam().equals(paramQueries.get(0))) // bolji način smislit
+//                .collect(Collectors.toList());
+//        }
 
         ParamQuery paramQueryToSave = new ParamQuery();
         paramQueryToSave.setUrlQuery(searchRequest.toQueryString());
@@ -54,8 +56,6 @@ public class FlightService {
             .builder(AMADEUS_CLIENT_ID, AMADEUS_CLIENT_SECRET)
             .build();
 
-        // TODO: Add For Stop Also & check if searchRequest exist
-        //For NonStop Only
         FlightOffer[] flightOffers = amadeus.shopping.flightOffers.get(searchRequest);
         for (FlightOffer flightOffer : flightOffers){
             FlightOffer.FlightSegment flightSegment = flightOffer.getOfferItems()[0].getServices()[0].getSegments()[0].getFlightSegment();

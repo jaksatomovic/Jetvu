@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Base64 } from 'js-base64';
 
 function b64DecodeUnicode(str) {
@@ -17,4 +18,9 @@ export function tokenData() {
 
 export function isLogged() {
     return tokenData() ? true : false
+}
+
+export function onLogout() {
+    localStorage.clear()
+    delete axios.defaults.headers.common['Authorization']
 }

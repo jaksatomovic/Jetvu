@@ -6,11 +6,6 @@ public final class Constants {
     public static final String POST = "POST";
     public static final String PUT = "PUT";
 
-
-    public static final String HTTPS = "https";
-    public static final String HTTP = "http";
-
-    public static final String USER_AGENT = "User-Agent";
     public static final String ACCEPT = "Accept";
     public static final String AUTHORIZATION = "Authorization";
     public static final String CONTENT_TYPE = "Content-Type";

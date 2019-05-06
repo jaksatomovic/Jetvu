@@ -22,7 +22,6 @@ public class Response {
     private int statusCode;
     private boolean parsed;
     private JsonObject result;
-    private JsonElement meta;
     private JsonElement data;
     private String body;
     private Request request;
@@ -31,28 +30,16 @@ public class Response {
         this.request = request;
     }
 
-    // Tries to parse the raw response from the request.
     public void parse(HTTPClient client) {
         parseStatusCode();
         parseData(client);
-//        parseMeta(client);
     }
 
-    // Tries to parse the status code. Catches any exceptions and defaults to
-    // status 0 if an error occurred.
     private void parseStatusCode() {
         try {
             this.statusCode = getRequest().getConnection().getResponseCode();
         } catch (IOException e) {
             this.statusCode = 0;
-        }
-    }
-
-    private void parseMeta(HTTPClient client) {
-        this.body = readBody();
-        this.result = parseJson(client);
-        if (result.has("meta")) {
-            this.meta = result.get("meta").getAsJsonObject();
         }
     }
 
@@ -74,31 +61,30 @@ public class Response {
 
     // Tries to read the body.
     private String readBody() {
-        // Get the connection
+
         HttpURLConnection connection = getRequest().getConnection();
 
-        // Try to get the input stream
         InputStream inputStream = null;
+
         try {
             inputStream = connection.getInputStream();
         } catch (IOException e) {
             inputStream = connection.getErrorStream();
         }
 
-        // Try to parse the input stream
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuffer body = new StringBuffer();
             String inputLine;
+
             while ((inputLine = bufferedReader.readLine()) != null) {
                 body.append(inputLine);
             }
+
             bufferedReader.close();
-            // Return the response body
             return body.toString();
         } catch (IOException e) {
-            // return null if we could not parse the input stream
             return null;
         }
     }

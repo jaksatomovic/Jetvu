@@ -6,23 +6,12 @@ import com.google.gson.GsonBuilder;
 import lombok.Getter;
 
 public class Resource {
+
     protected Resource() {}
 
-    /**
-     * The original response that this object is populated from.
-     */
     private @Getter Response response;
-    /**
-     * The class used for deserialization.
-     * @hide as only used internally
-     */
     private @Getter Class deSerializationClass;
 
-    /**
-     * Turns a response into a Gson deserialized array of resources,
-     * attaching the response to each resource.
-     * @hide as only used internally
-     */
     public static Resource[] fromArray(Response response, Class klass) {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Resource[] resources = (Resource[]) gson.fromJson(response.getData(), klass);
@@ -33,11 +22,6 @@ public class Resource {
         return resources;
     }
 
-    /**
-     * Turns a response into a Gson deserialized resource,
-     * attaching the response to the resource.
-     * @hide as only used internally
-     */
     public static Resource fromObject(Response response, Class klass) {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Resource resource = (Resource) gson.fromJson(response.getData(), klass);

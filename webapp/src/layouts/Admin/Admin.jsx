@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { tokenData } from 'helpers/util.js'
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
 
@@ -9,9 +8,11 @@ import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 
 import routes from "routes.js";
+import authRoutes from "authRoutes.js";
 
 import logo from "assets/img/react-logo.png";
 import axios from "axios";
+import { isLogged } from "../../helpers/util";
 
 var ps;
 
@@ -31,6 +32,9 @@ class Admin extends React.Component {
 
     axios.defaults.headers.common['Cache-Control'] = 'no-cache'
     axios.defaults.headers.common['Pragma'] = 'no-cache'
+    axios.defaults.headers.common['Content-Type'] = 'application/json'
+    axios.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true'
+    axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000'
 
     if (accessToken) {
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken
@@ -76,6 +80,7 @@ class Admin extends React.Component {
     document.documentElement.classList.toggle("nav-open");
     this.setState({ sidebarOpened: !this.state.sidebarOpened });
   };
+
   getRoutes = routes => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
@@ -109,11 +114,11 @@ class Admin extends React.Component {
         <div className="wrapper">
           <Sidebar
             {...this.props}
-            routes={routes}
+            routes={isLogged() ? authRoutes : routes}
             bgColor={this.state.backgroundColor}
             logo={{
-              outterLink: "https://www.jaksa.github.io/",
-              text: "Jakša Tomović",
+              outterLink: "",
+              text: "Jetvu",
               imgSrc: logo
             }}
             toggleSidebar={this.toggleSidebar}
@@ -129,7 +134,7 @@ class Admin extends React.Component {
               toggleSidebar={this.toggleSidebar}
               sidebarOpened={this.state.sidebarOpened}
             />
-            <Switch>{this.getRoutes(routes)}</Switch>
+            <Switch>{this.getRoutes(isLogged() ? authRoutes : routes)}</Switch>
           </div>
         </div>
       </>

@@ -33,7 +33,6 @@ public class Flight {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     @NonNull
     private String returnDate;
-//    private int stops;
     @NonNull
     private int adults;
 //    @NonNull

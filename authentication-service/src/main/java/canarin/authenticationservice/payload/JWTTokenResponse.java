@@ -1,16 +1,13 @@
 package canarin.authenticationservice.payload;
 
-public class JWTTokenResponse {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+public class JWTTokenResponse {
     private String token;
-    public JWTTokenResponse(String token) {
-        this.token = token;
-    }
-    public String getToken() {
-        return token;
-    }
-    public void setToken(String token) {
-        this.token = token;
-    }
 }
 

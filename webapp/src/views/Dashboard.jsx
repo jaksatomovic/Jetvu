@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
-
+import Moment from 'react-moment';
 
 
 class Dashboard extends Component {
@@ -31,7 +31,9 @@ class Dashboard extends Component {
             returnDate: "2019-08-28",
             nonStop: false,
             username: 'admin',
-            password: 'admin'
+            password: 'admin',
+            currency:  'EUR',
+            loading: false
         }
     }
 
@@ -45,38 +47,25 @@ class Dashboard extends Component {
         })
     }
 
-    login = () => {
+    login = async () => {
         let self = this
 
-        axios.post("http://localhost:5000/login", {
+        await axios.post("http://localhost:5000/login", {
             username: self.state.username,
             password: self.state.password
-        }, {
-            headers: {
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': 'true'
-            },
-            routes: {
-                "cors": true
-            }
         }).then(function (response) {
-            self.setState({
-                // flights: response.data
-            }, () => console.log(response.data.token))
-            if (response.data.success) {
                 localStorage.setItem('accessToken', response.data.token)
                 window.location.reload()
-            }
         }).catch(function (error) {
             console.log(error)
         })
     }
 
-    fetchFlights = () => {
+    fetchFlights = async () => {
         let self = this
+        this.setState({loading: true})
 
-        axios.post("http://localhost:9003/flights", {
+        await axios.post("http://localhost:9003/flights", {
             origin: self.state.origin,
             destination: self.state.destination,
             max: self.state.max,
@@ -84,18 +73,11 @@ class Dashboard extends Component {
             departureDate: self.state.departureDate,
             returnDate: self.state.returnDate,
             nonStop: self.state.nonStop,
-        }, {
-            headers: {
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': 'true'
-            },
-            routes: {
-                "cors": true
-            }
+            currency: self.state.currency
         }).then(function (response) {
             self.setState({
-                flights: response.data
+                flights: response.data,
+                loading: false
             }, () => console.log(response.data))
         }).catch(function (error) {
             console.log(error)
@@ -104,7 +86,7 @@ class Dashboard extends Component {
 
   render() {
 
-     const {flights} = this.state
+     const {flights, loading} = this.state
 
     return (
       <Fragment>
@@ -114,6 +96,8 @@ class Dashboard extends Component {
               <Card>
                 <CardHeader>
                   <h5 className="title">Search Low Fare Flights</h5>
+                    <h7>Napomena: nisam našao gdje se prikazuje broj stajanja pa sam to izostavio <br/>
+                    + frontend se može/treba još upicanit sa validacijama (formik & yup)</h7>
                 </CardHeader>
                 <CardBody>
                   <Form>
@@ -183,6 +167,16 @@ class Dashboard extends Component {
                           />
                         </FormGroup>
                       </Col>
+                        <Col className="pl-md-1" md="4">
+                            <FormGroup>
+                                <label>Currency</label>
+                                <select name="currency" value={this.state.currency} onChange={this.handleChange}>
+                                    <option value="EUR">EUR</option>
+                                    <option value="USD">USD</option>
+                                    <option value="HRK">HRK</option>
+                                </select>
+                            </FormGroup>
+                        </Col>
                     </Row>
                   </Form>
                 </CardBody>
@@ -248,6 +242,10 @@ class Dashboard extends Component {
                   <CardTitle tag="h4">Search results</CardTitle>
                 </CardHeader>
                 <CardBody>
+                    { loading === true &&
+                    <CardHeader>
+                        <CardTitle tag="h4">Loading...</CardTitle>
+                    </CardHeader>}
                     {flights.length !== 0 && flights !== undefined &&
                     <Table className="tablesorter" responsive>
                         <thead className="text-primary">
@@ -265,14 +263,19 @@ class Dashboard extends Component {
                             <tr key={i}>
                                 <td key={i}>{flight.origin}</td>
                                 <td key={i}>{flight.destination}</td>
-                                <td key={i}>{flight.departureDate}</td>
-                                <td key={i}>{flight.returnDate}</td>
+                                <td key={i}>
+                                    <Moment format="YYYY/MM/DD">{flight.departureDate}</Moment>
+                                </td>
+                                <td key={i}>
+                                    <Moment format="YYYY/MM/DD">{flight.returnDate}</Moment>
+                                </td>
                                 <td key={i}>{flight.adults}</td>
                                 <td key={i}>{flight.priceTotal}</td>
                             </tr>
                         )}
                         </tbody>
                     </Table>}
+                    {flights.length !== 0 && flights !== undefined &&
                   <ReactTable
                       data={flights}
                       columns={[
@@ -308,7 +311,7 @@ class Dashboard extends Component {
                       ]}
                       defaultPageSize={5}
                       className="table-responsive"
-                  />
+                  />}
                 </CardBody>
               </Card>
             </Col>

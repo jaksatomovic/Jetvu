@@ -2,12 +2,10 @@ package canarin.lowfare.rest;
 
 import canarin.lowfare.payload.Request;
 import canarin.lowfare.payload.Response;
-import canarin.lowfare.rest.AccessToken;
-import canarin.lowfare.util.Configuration;
 import canarin.lowfare.util.Constants;
 import canarin.lowfare.util.Params;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NoArgsConstructor;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -15,15 +13,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 @Getter
+@NoArgsConstructor
 public class HTTPClient {
 
     protected AccessToken accessToken = new AccessToken(this);
-
-    private @Getter Configuration configuration;
-
-    protected HTTPClient(Configuration configuration) {
-        this.configuration = configuration;
-    }
 
     // GET request without parameters
     public Response get(String path) throws Exception {
@@ -45,13 +38,6 @@ public class HTTPClient {
         return request(Constants.POST, path, params);
     }
 
-    /**
-     * A generic method for making any authenticated or unauthenticated request,
-     * passing in the bearer token explicitly. Used primarily by the
-     * AccessToken to get the first AccessToken.
-     *
-     * @hides as only used internally
-     */
     public Response unauthenticatedRequest(String verb, String path, Params params,
                                            String bearerToken) throws Exception {
         Request request = buildRequest(verb, path, params, bearerToken);
@@ -65,7 +51,7 @@ public class HTTPClient {
 
     // Builds a request
     protected Request buildRequest(String verb, String path, Params params, String bearerToken) {
-        return new Request(verb, path, params, bearerToken, this);
+        return new Request(verb, path, params, bearerToken);
     }
 
     // Executes a request and return a Response

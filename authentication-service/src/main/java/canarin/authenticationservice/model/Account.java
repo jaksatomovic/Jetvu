@@ -1,6 +1,7 @@
 package canarin.authenticationservice.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
@@ -22,6 +23,7 @@ import java.util.Set;
         "email"
     })
 })
+@NoArgsConstructor
 public class Account {
 
     @Id
@@ -44,8 +46,6 @@ public class Account {
     @Size(max = 100)
     @Column(name = "PASSWORD")
     private String password;
-
-    public Account() {}
 
     public Account( String username, String email, String password) {
         this.username = username;
