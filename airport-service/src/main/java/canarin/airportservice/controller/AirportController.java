@@ -1,7 +1,6 @@
 package canarin.airportservice.controller;
 
-import canarin.airportservice.model.Airport;
-import canarin.airportservice.payload.AirportRequest;
+import canarin.airportservice.model.AirportDTO;
 import canarin.airportservice.service.AirportService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +19,12 @@ public class AirportController {
     private AirportService airportService;
 
     @GetMapping
-    public List<Airport> getAll() {
+    public List<AirportDTO> getAll() {
         return airportService.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<?> addAirport(@RequestBody @Valid @NonNull AirportRequest airportRequest){
-        return airportService.addAirport(airportRequest);
+    public ResponseEntity<?> addAirport(@RequestBody @Valid @NonNull AirportDTO airport){
+        return airportService.addAirport(airport);
     }
 }

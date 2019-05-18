@@ -11,10 +11,10 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "airports")
-public class Airport {
+public class AirportDTO {
 
     @Id
-    @Setter(AccessLevel.PROTECTED)
+//    @Setter(AccessLevel.PROTECTED)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NonNull

@@ -11,9 +11,9 @@
 	</parent>
 
 	<groupId>canarin</groupId>
-	<artifactId>airport-service</artifactId>
+	<artifactId>airportDTO-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>airport-service</name>
+	<name>airportDTO-service</name>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -56,6 +56,15 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.3.1</version>
 		</dependency>
 	</dependencies>
 

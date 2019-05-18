@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react";
+import React, { Component, Fragment } from "react";
 // reactstrap components
 import {
     Button,
@@ -42,7 +42,7 @@ class Airport extends Component {
     addAirport = async () => {
         await axios.post("http://localhost:9001/airports", {
             name: this.state.name,
-            iataCode: this.state.iata
+            iata: this.state.iata
         }).then(function (response) {
             this.setState({
                 name: '',
@@ -83,22 +83,22 @@ class Airport extends Component {
                                 </CardHeader>
                                 <CardBody>
                                     {airports.length !== 0 && airports !== undefined &&
-                                    <Table className="tablesorter" responsive>
-                                        <thead className="text-primary">
-                                        <tr>
-                                            <th key={1}>Name</th>
-                                            <th key={2}>IATA Code</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {airports.map((airport, i) =>
-                                            <tr key={i}>
-                                                <td key={airport.id}>{airport.name}</td>
-                                                <td key={airport.id}>{airport.iata}</td>
-                                            </tr>
-                                        )}
-                                        </tbody>
-                                    </Table>}
+                                        <Table className="tablesorter" responsive>
+                                            <thead className="text-primary">
+                                                <tr>
+                                                    <th key={1}>Name</th>
+                                                    <th key={2}>IATA Code</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {airports.map((airport, i) =>
+                                                    <tr key={i}>
+                                                        <td key={airport.id}>{airport.name}</td>
+                                                        <td key={airport.id}>{airport.iata}</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </Table>}
                                 </CardBody>
                             </Card>
                         </Col>
